@@ -1,0 +1,21 @@
+{
+  "name": "package-installer-exercise",
+  "version": "1.0.0",
+  "sourceFiles": {
+    "js": [
+      "./src/js"
+    ]
+  },
+  "mockFiles": [
+    "./test/mock/packageInstaller.mock.js"
+  ],
+  "testFiles": [
+    "./test/spec/packageInstaller.spec.js"
+  ],
+  "devDependencies": {
+    "jasmine": "^2.6.0"
+  },
+  "scripts": {
+    "test": "jasmine"
+  }
+}
