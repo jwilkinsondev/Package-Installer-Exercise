@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "sourceFiles": {
     "js": [
-      "./src/js"
+      "./src/js.packageInstaller.js"
     ]
   },
   "mockFiles": [
@@ -13,6 +13,9 @@
     "./test/spec/packageInstaller.spec.js"
   ],
   "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "~0.1.13",
+    "grunt-contrib-jasmine": "~0.8.1",
     "jasmine": "^2.6.0"
   },
   "scripts": {

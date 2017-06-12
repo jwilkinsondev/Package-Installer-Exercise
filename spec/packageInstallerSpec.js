@@ -4,7 +4,7 @@
 
 
 describe('package installer exercise specs', () => {
-  var PackageInstaller = require('../../src/js/packageInstaller');
+  var PackageInstaller = require('../src/packageInstaller');
   var testInstaller
   beforeEach(() => {
     testInstaller = new PackageInstaller();
@@ -12,7 +12,7 @@ describe('package installer exercise specs', () => {
   
   
   afterEach(() => {
-    TestInstaller = null;
+    testInstaller = null;
   });
     
   
@@ -20,7 +20,7 @@ describe('package installer exercise specs', () => {
     
     it('should be an object', () => {
       //testInstaller = {};
-      expect(TestInstaller).toEqual(jasmine.any(Object));
+      expect(testInstaller).toEqual(jasmine.any(Object));
     });
       
   });
