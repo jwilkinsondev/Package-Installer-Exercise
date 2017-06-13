@@ -35,7 +35,61 @@ PackageInstaller.prototype.validateInput = function(){
     return true;
 }
 
-PackageInstaller.prototype.kahnsSort = function(dependencies){
+PackageInstaller.prototype.kahnsSort = function(input){
+    var result = [];
+    var nextNodes = [];
+    var currentNode;
+    var nodes = this.generateNodes(input);
+    var newNodes = []; 
+    var nodesCount = nodes.length;
+    var validationLength = nodesCount;
+    var i;
+    var j;
+    var currentIncomingEdges;
+    for(i=0; i < nodesCount; i++){
+        // if a node isn't dependent on anything, add it to the list of next avalible nodes
+        if(nodes[i].incomingEdges == 0){
+            nextNodes.push(nodes[i]);
+        }
+        else{
+            // make a new list since it's a bad idea to delete from the same list we're looping over
+            newNodes.push(nodes[i])
+        }
+    }
+
+    nodes = newNodes;
+
+    // while nextNodes isn't empty
+    while(nextNodes.length > 0){
+        currentNode = nextNodes.pop();
+        result.push(currentNode.name);
+
+
+        // for each node
+        for(i = 0; i < nodes.length; i++){
+            currentIncomingEdges = nodes[i].incomingEdges;
+            for(j = currentIncomingEdges.length - 1; j >= 0; j--){
+                // if the current node is an incoming edge
+                if(currentIncomingEdges[j] === currentNode.name){
+                    // remove the current node from the incoming edges
+                   currentIncomingEdges.splice(j, 1);
+                }
+            }
+            // check to see if all of its dependencies are now resolved
+            if(nodes[i].incomingEdges.length === 0){
+                nextNodes.push(nodes[i])
+                // remove the node from the list
+                nodes.splice(i, 1);
+            }
+            
+        }
+    }
+    if(result.length === validationLength ){
+        return result;
+    }
+    else{
+        return -1;
+    }
 
 }
 
@@ -63,8 +117,17 @@ PackageInstaller.prototype.generateNodes = function(input){
 }
 
 
+var testInstaller = new PackageInstaller();
+var dependencies =   [
+ "KittenService: ",
+ "Leetmeme: Cyberportal",
+ "Cyberportal: Ice",
+ "CamelCaser: KittenService",
+ "Fraudstream: ",
+ "Ice: Leetmeme"
+]
 
-
-
+var result = testInstaller.kahnsSort(dependencies);
+console.log(result)
 
 module.exports = PackageInstaller;

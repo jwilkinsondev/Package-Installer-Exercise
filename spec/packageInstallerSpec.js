@@ -100,6 +100,7 @@ describe('package installer exercise specs', () => {
   
   describe('generate output', () => {
       var dependencies;
+      var sortedResults;
       var result;
       describe('generate the list of nodes', () => {
           
@@ -123,18 +124,40 @@ describe('package installer exercise specs', () => {
           it('should return a valid dependency order', () => {
               dependencies = [ "KittenService: CamelCaser", "CamelCaser: " ];
               result = testInstaller.kahnsSort(dependencies);
-              expect(result).toEqual("CamelCaser, KittenService");
+              expect(result).toEqual([ 'CamelCaser', 'KittenService' ]);
           });
 
           
-          it('should handle dependency loops', () => {
-              
+          it('should return -1 for dependency loops', () => {
+                dependencies =  ["KittenService: ",
+                    "Leetmeme: Cyberportal",
+                    "Cyberportal: Ice",
+                    "CamelCaser: KittenService",
+                    "Fraudstream: ",
+                    "Ice: Leetmeme"
+                ]
+                result = testInstaller.kahnsSort(dependencies);
+                expect(result).toEqual(-1)
           });
-              
-              
       });
           
+      
+      describe('generate output', () => {
           
+          it('should handle success correctly', () => {
+              sortedResults = [ 'CamelCaser', 'KittenService' ];
+              result = testInstaller.generateOutput(sortedResults);
+              expect(result).toEqual("CamelCaser, KittenService");
+          });
+          
+          it('should handle loops correctly', () => {
+              sortedResults = -1;
+              result = testInstaller.generateOutput(sortedResults);
+              expect(result).toEqual("The dependency list contained a cycle. Please resolve the cycle and resubmit.")
+          });
+                      
+      });
+              
   });
       
     
