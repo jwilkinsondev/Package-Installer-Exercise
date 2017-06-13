@@ -15,11 +15,9 @@ describe('package installer exercise specs', () => {
     
   
   describe('Verify that the object is set up correctly', () => {
-    
     it('should be an object', () => {
       expect(testInstaller).toEqual(jasmine.any(Object));
-    });
-      
+    });  
   });
 
   
@@ -61,6 +59,17 @@ describe('package installer exercise specs', () => {
       });
           
   });
+
+  
+  describe('validate the input', () => {
+      it('should only accept arrays', () => {
+          testInstaller.m_savedInputString = [];
+          expect(testInstaller.validateInput()).toEqual(true);
+          testInstaller.m_savedInputString = "stuff";
+          expect(testInstaller.validateInput()).toEqual(false);
+      });
+  });
+
   
   describe('generate output', () => {
       var dependencies;
@@ -124,6 +133,47 @@ describe('package installer exercise specs', () => {
               
   });
       
-    
+  
+  describe('should take in input and return final output', () => {
+      var dependencies;
+      var result;
+
+      
+        it('should generate a valid response for valid data', () => {
+            dependencies = [ "KittenService: CamelCaser", "CamelCaser: " ]
+            result = testInstaller.main(dependencies);
+            expect(result).toEqual("CamelCaser, KittenService");
+
+            dependencies = [
+                "KittenService: ",
+                "Leetmeme: Cyberportal",
+                "Cyberportal: Ice",
+                "CamelCaser: KittenService",
+                "Fraudstream: Leetmeme",
+                "Ice: "
+            ]
+            result = testInstaller.main(dependencies);
+            expect(result).toEqual("Ice, Cyberportal, Leetmeme, Fraudstream, KittenService, CamelCaser");
+
+        
+      });
+          
+      
+      it('should generate a valid response for invalid data', () => {
+            dependencies = [
+                "KittenService: ",
+                "Leetmeme: Cyberportal",
+                "Cyberportal: Ice",
+                "CamelCaser: KittenService",
+                "Fraudstream: ",
+                "Ice: Leetmeme"
+            ]
+
+            result = testInstaller.main(dependencies);
+            expect(result).toEqual("The dependency list contained a cycle. Please resolve the cycle and resubmit.");
+      });
+
+  });
+        
 });
   

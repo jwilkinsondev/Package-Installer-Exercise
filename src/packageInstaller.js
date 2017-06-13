@@ -27,11 +27,6 @@ PackageInstaller.prototype.validateInput = function(){
         // the input isn't even an array so it's not valid
         return false;
     }
-    if(this.checkForDependencyLoops(dependencies)){
-        // there are loops in the dependency so it's not valid
-        return false;
-    }
-
     return true;
 }
 
@@ -122,6 +117,13 @@ PackageInstaller.prototype.generateOutput = function(input){
 
     return input.join(', ');
 }
+
+PackageInstaller.prototype.main = function(input){
+    var sortedNodes = this.kahnsSort(input);
+    var result = this.generateOutput(sortedNodes);
+    return result;
+}
+
 
 var testInstaller = new PackageInstaller();
 var dependencies =   [
