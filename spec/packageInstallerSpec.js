@@ -17,7 +17,6 @@ describe('package installer exercise specs', () => {
   describe('Verify that the object is set up correctly', () => {
     
     it('should be an object', () => {
-      //testInstaller = {};
       expect(testInstaller).toEqual(jasmine.any(Object));
     });
       
@@ -62,41 +61,6 @@ describe('package installer exercise specs', () => {
       });
           
   });
-
-  
-  xdescribe('validate the input', () => {
-      
-      xit('should only accept arrays', () => {
-          testInstaller.m_savedInputString = [];
-          expect(testInstaller.validateInput()).toEqual(true);
-          testInstaller.m_savedInputString = "stuff";
-          expect(testInstaller.validateInput()).toEqual(false);
-      });
-      
-      xit('should only accept input that does not have dependency loops', () => {
-          var valid =  [
-                "KittenService: ",
-                "Leetmeme: Cyberportal",
-                "Cyberportal: Ice",
-                "CamelCaser: KittenService",
-                "Fraudstream: Leetmeme",
-                "Ice: "
-            ];
-          var invalid = [
-                "KittenService: ",
-                "Leetmeme: Cyberportal",
-                "Cyberportal: Ice",
-                "CamelCaser: KittenService",
-                "Fraudstream: ",
-                "Ice: Leetmeme"
-            ]
-          expect(testInstaller.checkForDependencyLoops(valid)).toBe(true);
-          expect(testInstaller.checkForDependencyLoops(invalid)).toBe(false);
-      });
-          
-          
-  });
-
   
   describe('generate output', () => {
       var dependencies;

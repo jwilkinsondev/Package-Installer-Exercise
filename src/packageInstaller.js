@@ -112,10 +112,16 @@ PackageInstaller.prototype.generateNodes = function(input){
             incomingEdges:[]
         }
     }, this);
-    console.log(result);
     return result;
 }
 
+PackageInstaller.prototype.generateOutput = function(input){
+    if(input === -1){
+        return "The dependency list contained a cycle. Please resolve the cycle and resubmit.";
+    }
+
+    return input.join(', ');
+}
 
 var testInstaller = new PackageInstaller();
 var dependencies =   [
@@ -123,11 +129,12 @@ var dependencies =   [
  "Leetmeme: Cyberportal",
  "Cyberportal: Ice",
  "CamelCaser: KittenService",
- "Fraudstream: ",
- "Ice: Leetmeme"
+ "Fraudstream: Leetmeme",
+ "Ice: "
 ]
 
 var result = testInstaller.kahnsSort(dependencies);
+result = testInstaller.generateOutput(result)
 console.log(result)
 
 module.exports = PackageInstaller;
