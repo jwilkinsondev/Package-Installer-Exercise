@@ -29,24 +29,17 @@ PackageInstaller.prototype.kahnsSort = function (input) {
     var nextNodes = [];
     var currentNode;
     var nodes = this.generateNodes(input);
-    var newNodes = [];
-    var nodesCount = nodes.length;
-    var validationLength = nodesCount;
-    var i;
-    var j;
-    var currentIncomingEdges;
-    for (i = 0; i < nodesCount; i++) {
-        // if a node isn't dependent on anything, add it to the list of next avalible nodes
-        if (nodes[i].incomingEdges == 0) {
-            nextNodes.push(nodes[i]);
-        }
-        else {
-            // make a new list since it's a bad idea to delete from the same list we're looping over
-            newNodes.push(nodes[i])
-        }
-    }
+    var validationLength = nodes.length;
 
-    nodes = newNodes;
+    nodes = nodes.filter(function(node){
+        // if a node isn't dependent on anything, add it to the list of next avalible nodes
+        if (node.incomingEdges == 0) {
+            nextNodes.push(node);
+            return false;
+        }
+        // by default, keep the node
+        return true
+    })
 
     // while nextNodes isn't empty
     while (nextNodes.length > 0) {
@@ -63,7 +56,7 @@ PackageInstaller.prototype.kahnsSort = function (input) {
             if (node.incomingEdges.length === 0) {
                 nextNodes.push(node)
                 // remove the node from the list
-                return false 
+                return false ;
             }
 
             // by default, keep the node
