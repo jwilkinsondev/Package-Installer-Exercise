@@ -122,6 +122,15 @@ describe('package installer exercise specs', () => {
             result = testInstaller.main(dependencies);
             expect(result).toEqual("Ice, Cyberportal, Leetmeme, Fraudstream, KittenService, CamelCaser");
         });
+
+        
+        it('should generate a valid response for valid data with more than 1 dependency chain', () => {
+            dependencies = ["A: C", "B: C", "C: "];
+            result = testInstaller.main(dependencies);
+            expect(result).toEqual("C, B, A");
+        });
+            
+
         it('should generate a valid response for invalid data that contains a cycle', () => {
             dependencies = [
                 "KittenService: ",

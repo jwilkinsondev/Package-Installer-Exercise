@@ -53,25 +53,23 @@ PackageInstaller.prototype.kahnsSort = function (input) {
         currentNode = nextNodes.pop();
         result.push(currentNode.name);
 
+        nodes = nodes.filter(function(node){
+            //filter out incomingEdges that match the name of the node we just installed
+            node.incomingEdges = node.incomingEdges.filter(function (edge) {
+                return edge !== currentNode.name;
+            })
 
-        // for each node
-        for (i = 0; i < nodes.length; i++) {
-            currentIncomingEdges = nodes[i].incomingEdges;
-            for (j = currentIncomingEdges.length - 1; j >= 0; j--) {
-                // if the current node is an incoming edge
-                if (currentIncomingEdges[j] === currentNode.name) {
-                    // remove the current node from the incoming edges
-                    currentIncomingEdges.splice(j, 1);
-                }
-            }
             // check to see if all of its dependencies are now resolved
-            if (nodes[i].incomingEdges.length === 0) {
-                nextNodes.push(nodes[i])
+            if (node.incomingEdges.length === 0) {
+                nextNodes.push(node)
                 // remove the node from the list
-                nodes.splice(i, 1);
+                return false 
             }
 
-        }
+            // by default, keep the node
+            return true;
+        })
+
     }
     if (result.length === validationLength) {
         return result;
@@ -138,6 +136,8 @@ var valid2 = [
     "Fraudstream: Leetmeme",
     "Ice: "
 ]
+var valid3 = ["A: C", "B: C", "C: "];
+var valid4 = ["E: A", "F: B", "B: C", "C: D", "G: D", "A: G", "D: "]
 var invalid1 = [
     "KittenService: ",
     "Leetmeme: Cyberportal",
@@ -148,8 +148,10 @@ var invalid1 = [
 ]
 
 
-console.log(testInstaller.main(valid1));
-console.log(testInstaller.main(valid2));
-console.log(testInstaller.main(invalid1));
-console.log(testInstaller.main(null));
+//console.log(testInstaller.main(valid1));
+//console.log(testInstaller.main(valid2));
+//console.log(testInstaller.main(valid3));
+console.log(testInstaller.main(valid4));
+//console.log(testInstaller.main(invalid1));
+//console.log(testInstaller.main(null));
 module.exports = PackageInstaller;
