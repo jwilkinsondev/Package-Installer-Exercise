@@ -19,7 +19,7 @@ PackageInstaller.prototype.validateInput = function (input) {
 
     if (!Array.isArray(input)) {
         // the input isn't even an array so it's not valid
-        return false;
+        throw "datatype error";
     }
     return true;
 }
@@ -31,7 +31,7 @@ PackageInstaller.prototype.kahnsSort = function (input) {
     var nodes = this.generateNodes(input);
     var validationLength = nodes.length;
 
-    nodes = nodes.filter(function(node){
+    nodes = nodes.filter(function (node) {
         // if a node isn't dependent on anything, add it to the list of next avalible nodes
         if (node.incomingEdges == 0) {
             nextNodes.push(node);
@@ -46,7 +46,7 @@ PackageInstaller.prototype.kahnsSort = function (input) {
         currentNode = nextNodes.pop();
         result.push(currentNode.name);
 
-        nodes = nodes.filter(function(node){
+        nodes = nodes.filter(function (node) {
             //filter out incomingEdges that match the name of the node we just installed
             node.incomingEdges = node.incomingEdges.filter(function (edge) {
                 return edge !== currentNode.name;
@@ -56,7 +56,7 @@ PackageInstaller.prototype.kahnsSort = function (input) {
             if (node.incomingEdges.length === 0) {
                 nextNodes.push(node)
                 // remove the node from the list
-                return false ;
+                return false;
             }
 
             // by default, keep the node
@@ -68,7 +68,7 @@ PackageInstaller.prototype.kahnsSort = function (input) {
         return result;
     }
     else {
-        return -1;
+        throw "cycle error";
     }
 
 }
@@ -96,24 +96,21 @@ PackageInstaller.prototype.generateNodes = function (input) {
 }
 
 PackageInstaller.prototype.generateOutput = function (input) {
-    if (input === -1) {
-        return "The dependency list contained a cycle. Please resolve the cycle and resubmit.";
-    }
-
     return input.join(', ');
 }
 
 PackageInstaller.prototype.main = function (input) {
     var sortedNodes;
     var result;
-    // make sure that the input is actually an array
-    if (this.validateInput(input)) {
+    try {
+        // make sure that the input is actually an array
+        this.validateInput(input)
         sortedNodes = this.kahnsSort(input);
         result = this.generateOutput(sortedNodes);
         return result;
-    }
-    else {
-        return "An invalid list of dependencies was submitted. Please fix the dependencies and resubmit."
+
+    } catch (error) {
+        return "An error occured, please verify that the dependency list is valid and try again."
     }
 
 }

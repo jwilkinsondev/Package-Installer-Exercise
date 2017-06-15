@@ -45,7 +45,8 @@ describe('package installer exercise specs', () => {
     describe('validate the input', () => {
         it('should only accept arrays', () => {
             expect(testInstaller.validateInput([])).toEqual(true);
-            expect(testInstaller.validateInput("stuff")).toEqual(false);
+            expect(function () { testInstaller.validateInput([1, 2, 3]); }).not.toThrow("datatype error");
+            expect(function () { testInstaller.validateInput("stuff"); }).toThrow("datatype error");
         });
     });
 
@@ -74,7 +75,7 @@ describe('package installer exercise specs', () => {
                 result = testInstaller.kahnsSort(dependencies);
                 expect(result).toEqual(['CamelCaser', 'KittenService']);
             });
-            it('should return -1 for dependency loops', () => {
+            it('should throw an error for dependency loops', () => {
                 dependencies = ["KittenService: ",
                     "Leetmeme: Cyberportal",
                     "Cyberportal: Ice",
@@ -82,21 +83,16 @@ describe('package installer exercise specs', () => {
                     "Fraudstream: ",
                     "Ice: Leetmeme"
                 ]
-                result = testInstaller.kahnsSort(dependencies);
-                expect(result).toEqual(-1)
+                expect(function () { testInstaller.kahnsSort(dependencies); }).toThrow("cycle error");
+
             });
         });
 
         describe('generate output', () => {
-            it('should handle success correctly', () => {
+            it('should format output correctly', () => {
                 sortedResults = ['CamelCaser', 'KittenService'];
                 result = testInstaller.generateOutput(sortedResults);
                 expect(result).toEqual("CamelCaser, KittenService");
-            });
-            it('should handle loops correctly', () => {
-                sortedResults = -1;
-                result = testInstaller.generateOutput(sortedResults);
-                expect(result).toEqual("The dependency list contained a cycle. Please resolve the cycle and resubmit.")
             });
         });
     });
@@ -123,15 +119,20 @@ describe('package installer exercise specs', () => {
             expect(result).toEqual("Ice, Cyberportal, Leetmeme, Fraudstream, KittenService, CamelCaser");
         });
 
-        
-        it('should generate a valid response for valid data with more than 1 dependency chain', () => {
-            dependencies = ["A: C", "B: C", "C: "];
-            result = testInstaller.main(dependencies);
-            expect(result).toEqual("C, B, A");
-        });
-            
 
-        it('should generate a valid response for invalid data that contains a cycle', () => {
+        it('should generate a valid response for valid data with more than 1 dependency chain', () => {
+
+            var valid1 = ["A: C", "B: C", "C: "];
+            var valid2 = ["E: A", "F: B", "B: C", "C: D", "G: D", "A: G", "D: "];
+
+            result = testInstaller.main(valid1);
+            expect(result).toEqual("C, B, A");
+            result = testInstaller.main(valid2);
+            expect(result).toEqual("D, G, A, E, C, B, F");
+        });
+
+
+        it('should catch any thrown errors', () => {
             dependencies = [
                 "KittenService: ",
                 "Leetmeme: Cyberportal",
@@ -141,20 +142,15 @@ describe('package installer exercise specs', () => {
                 "Ice: Leetmeme"
             ]
 
-            result = testInstaller.main(dependencies);
-            expect(result).toEqual("The dependency list contained a cycle. Please resolve the cycle and resubmit.");
+            expect(testInstaller.main(dependencies)).toEqual("An error occured, please verify that the dependency list is valid and try again.");
+
         });
-        it('should return a generic error message for garbage input', () => {
-            result = testInstaller.main(null);
-            expect(result).toEqual("An invalid list of dependencies was submitted. Please fix the dependencies and resubmit.");
-            result = testInstaller.main(undefined);
-            expect(result).toEqual("An invalid list of dependencies was submitted. Please fix the dependencies and resubmit.");
-            result = testInstaller.main("foo");
-            expect(result).toEqual("An invalid list of dependencies was submitted. Please fix the dependencies and resubmit.");
-            result = testInstaller.main(42);
-            expect(result).toEqual("An invalid list of dependencies was submitted. Please fix the dependencies and resubmit.");
-            result = testInstaller.main({});
-            expect(result).toEqual("An invalid list of dependencies was submitted. Please fix the dependencies and resubmit.");
+        it('should throw an error for garbage input', () => {
+            expect(function () { testInstaller.validateInput(null); }).toThrow("datatype error");
+            expect(function () { testInstaller.validateInput(undefined); }).toThrow("datatype error");
+            expect(function () { testInstaller.validateInput("foo"); }).toThrow("datatype error");
+            expect(function () { testInstaller.validateInput(42); }).toThrow("datatype error");
+            expect(function () { testInstaller.validateInput({}); }).toThrow("datatype error");
         });
     });
 });
